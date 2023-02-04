@@ -1,0 +1,19 @@
+{
+  "name": "spotify-overlay",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "author": "Navi7468",
+  "license": "ISC",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "dotenv": "^16.0.3",
+    "electron": "^22.2.0",
+    "path": "^0.12.7",
+    "ws": "^8.12.0"
+  }
+}
