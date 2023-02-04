@@ -8,13 +8,14 @@ import urllib.request
 from PIL import Image, ImageStat
 from dotenv import load_dotenv
 import os
-
 load_dotenv()
+
+
 
 print("Starting up...")
 
 sp_oauth = SpotifyOAuth(
-    client_id='30009c44b2d743ad9cdb4ef8a4228812', client_secret='0548d71bd88549af836c29f7022c12f3', redirect_uri='http://localhost:8080/appSpotifyOverlay', scope='user-read-currently-playing, user-modify-playback-state, user-read-playback-state, user-read-recently-played, app-remote-control')
+    client_id=os.getenv("CLIENT_ID"), client_secret=os.getenv("CLIENT_SECRET"), redirect_uri=os.getenv("REDIRECT_URI"), scope='user-read-currently-playing, user-modify-playback-state, user-read-playback-state, user-read-recently-played, app-remote-control')
 
 sp = spotipy.Spotify(auth_manager=sp_oauth)
 
