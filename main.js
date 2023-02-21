@@ -52,7 +52,7 @@ app.on('ready', () => {
             nodeIntegration: true,
             contextIsolation: false,
         },
-        resizable: false,
+        // resizable: false,
         transparent: true,
         frame: false,
         alwaysOnTop: true
@@ -89,11 +89,3 @@ const mainMenuTemplate = [
         ]
     }
 ];
-
-
-
-
-
-
-
-
