@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "cls && electron ."
   },
   "keywords": [],
   "author": "",
@@ -12,6 +12,7 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "path": "^0.12.7",
+    "spotify-web-api-node": "^5.0.2",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
