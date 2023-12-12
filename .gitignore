@@ -1,4 +1,9 @@
+# Visual Studio Code settings
 .vscode
+
+# Environment variables
 .env
+
+# Dependencies
 node_modules
 package-lock.json

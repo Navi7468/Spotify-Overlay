@@ -77,7 +77,7 @@ function createMainWindow() {
         alwaysOnTop: true,
     });
 
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile('app/index.html');
 
     setInterval(updateSong, 1000);
 

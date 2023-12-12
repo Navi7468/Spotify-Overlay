@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Spotify Overlay</title>
+    <link rel="stylesheet" href="styl.css">
+    <script type="module" src="renderer.js" defer></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="album-cover-container">
+            <img src="" alt="Background Album Cover" id="background-album-cover" width="250">
+            <img src="" alt="Current Album Cover" id="current-album-cover" width="250">
+            <img src="" alt="Next Album Cover" id="next-album-cover" width="250">
+        </div>
+        <div id="content">
+            <h1 id="song">Loading...</h1>
+        </div>
+        <div id="controls">
+            <button id="prev">Prev</button>
+            <button id="play">Play</button>
+            <button id="next">Next</button>
+        </div>
+    </div>
+</body>
+
+<!-- my old system:
+    
+    <body>
+        <div class="song" id="song">
+            <img src="${newimg}" width="150" id="img">
+            <div class="background" id="background-container">
+                <img src="${newimg}" id="hi" class="abs1 background-blured" data-reveal="left">
+                <img src="${oldimg}" id="background" class="abs2 background-blured">
+            </div>
+            <div id="hover"></div>
+            <div class="song-info" id="song-info">
+                <div class="text" id="text">
+                    <h4>${song}</h4>
+                    <p>${artist}</p>
+                </div>
+                <div class="time">
+                    <p>${timestamp} - ${duration}</p>
+                </div>
+            </div>
+        </div>
+    </body>
+-->
+
+
+</html>
