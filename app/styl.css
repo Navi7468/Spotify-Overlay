@@ -1,92 +1,153 @@
+/* General Styles */
 body {
     margin: 0;
     -webkit-user-select: none;
+    -webkit-app-region: drag;
     width: 520px;
     height: 170px;
     overflow: hidden;
-}
-
-#song {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 700px;
-    height: fit-content;
+    align-items: flex-start;
+    /* background-color: rgb(44, 44, 44); */
     color: white;
-    text-shadow: rgba(0, 0, 0, 0.6) 0 0 10px;
-    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    word-wrap: normal;
+    font-size: 10px;
 }
 
-#album-cover-container {
+/* Album Cover Styles */
+#app, #album-cover-container {
+    display: flex;
+    align-items: center;
+}
+
+#album-covers {
+    position: relative;
+    margin: 10px;
+    margin-right: 0;
+    width: 150px;
+    height: 150px;
     box-shadow: rgba(255, 255, 255, 0.5) 0 0 10px;
     border-radius: 10px;
-    margin-left: 10px;
-    margin-top: 10px;
-    -webkit-user-drag: none;
 }
 
-#background-album-cover {
+#album-covers img, #background-covers img {
     position: absolute;
-    z-index: -1;
-    top: 15px;
-    left: 150px;
-    width: 340px;
-    height: 140px;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: blur(10px);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     border-radius: 10px;
+}
+
+.current-album-cover {
+    z-index: 2;
+}
+
+.previous-album-cover {
+    z-index: 1;
+}
+
+#background-covers {
+    position: relative;
+    width: 400px;
+    height: 140px;
+}
+
+#background-covers img {
+    object-fit: cover;
     -webkit-filter: blur(3px);
 }
 
-#song-info {
-    width: 320px;
+.previous-album-cover {
+    -webkit-filter: blur(1px);
+}
+
+/* Control Styles */
+#controls {
     display: flex;
-    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    z-index: 3;
+    position: relative;
+    -webkit-app-region: no-drag;
 }
 
-#text {
-    width: 200px;
-    word-wrap: normal;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+[data-reveal="left"] {
+    clip-path: inset(0 100% 0 0);
+}
+
+[data-reveal="left"].revealed {
+    border-radius: 10px;
+    -webkit-filter: blur(3px);
+    z-index: 2;
+    animation: reveal-left 1.2s cubic-bezier(0.17, 0.97, 0.38, 1) forwards 300ms;
+}
+
+@keyframes reveal-left {
+    0% {
+        clip-path: inset(0 100% 0 0);
+    }
+    100% {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* Content Styles */
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     padding: 10px;
+    padding-left: 5px;
+    position: relative;
+    z-index: 3;
 }
 
+#song {
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+#artist {
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+/* Time and Progress Bar Styles */
 #time {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    padding: 10px;
+    width: 90%;
 }
 
-#prev {
-    position: absolute;
-    top: 75px;
-    left: 120px;
+#progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #717580;
+    border-radius: 20px;
+    margin-right: 1em;
+    overflow: hidden;
+    -webkit-app-region: no-drag;
+    transition: all 0.3s ease-in-out;
 }
 
-#play {
-    position: absolute;
-    top: 75px;
-    left: 20px;
+#progress-bar:hover {
+    box-shadow: 0 0 10px #808080; /* Add a red glow on hover */
 }
 
-#next {
-    position: absolute;
-    top: 75px;
-    left: 70px;
+#progress {
+    height: 100%;
+    background: linear-gradient(to right, #636363, #bd2e2e);
+    border-radius: 20px;
+    transition: width 0.5s ease;
 }
 
-button {
-    z-index: 100;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    background: none;
-    border: none;
-    color: rgba(0, 0, 0, 0);
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+#time-display {
+    display: flex;
+    justify-content: space-between;
+    width: 60px;
 }

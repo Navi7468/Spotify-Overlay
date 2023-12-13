@@ -9,17 +9,21 @@ const spotifyApi = new SpotifyWebApi({
     redirectUri: process.env.REDIRECT_URI
 });
 
-let mainWindow;
-let currentSong, currentProgressMs, currentDurationMs, currentImageUrl;
+let mainWindow, authWindow;
+let currentSong, progressMs, durationMs, imageUrl;
 
 function createAuthWindow() {
-    const authWindow = new BrowserWindow({
+    authWindow = new BrowserWindow({
         width: 800,
         height: 600,
         show: false,
         webPreferences: {
             nodeIntegration: false,
-        }
+        },
+        frame: false,
+        alwaysOnTop: true,
+        transparent: true,
+        resizable: false
     });
 
     const scopes = ['user-read-private', 'user-read-email', 'user-modify-playback-state', 'user-read-currently-playing', 'user-read-playback-state'];
@@ -28,20 +32,22 @@ function createAuthWindow() {
     authWindow.loadURL(authUrl);
     authWindow.show();
 
-    authWindow.webContents.on('did-redirect-navigation', async (event, url) => {
-        if (url.startsWith(process.env.REDIRECT_URI)) {
-            const newUrl = new URL(url);
-            const code = newUrl.searchParams.get('code');
-            const data = await spotifyApi.authorizationCodeGrant(code);
+    authWindow.webContents.on('did-redirect-navigation', handleAuthRedirect);
+}
 
-            const { access_token, refresh_token } = data.body;
-            spotifyApi.setAccessToken(access_token);
-            spotifyApi.setRefreshToken(refresh_token);
+async function handleAuthRedirect(event, url) {
+    if (url.startsWith(process.env.REDIRECT_URI)) {
+        const newUrl = new URL(url);
+        const code = newUrl.searchParams.get('code');
+        const data = await spotifyApi.authorizationCodeGrant(code);
 
-            authWindow.close();
-            createMainWindow();
-        }
-    });
+        const { access_token, refresh_token } = data.body;
+        spotifyApi.setAccessToken(access_token);
+        spotifyApi.setRefreshToken(refresh_token);
+
+        authWindow.close();
+        createMainWindow();
+    }
 }
 
 async function updateSong() {
@@ -54,66 +60,58 @@ async function updateSong() {
                 progressMs = data.body.progress_ms;
                 durationMs = newSong.duration_ms;
                 imageUrl = newSong.album.images[0].url;
-                mainWindow.webContents.send('update-song', { name: currentSong, progressMs, durationMs, imageUrl });
             } else {
                 progressMs = data.body.progress_ms;
-                mainWindow.webContents.send('update-song', { name: currentSong, progressMs, durationMs, imageUrl });
             }
+            mainWindow.webContents.send('update-song', { name: currentSong, progressMs, durationMs, imageUrl });
         }
     } catch (error) {
         console.error('Failed to update song:', error);
     }
 }
 
-
 function createMainWindow() {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 570,
+    height: 170,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false
         },
+        frame: false,
         alwaysOnTop: true,
+        transparent: true,
+        resizable: false,
+        titleBarStyle: 'hidden'
     });
 
     mainWindow.loadFile('app/index.html');
-
     setInterval(updateSong, 1000);
 
-    ipcMain.on('get-current-song', async () => {
-        const data = await spotifyApi.getMyCurrentPlayingTrack();
-        mainWindow.webContents.send('update-song', data.body.item.name);
-    });
+    ipcMain.on('get-current-song', getCurrentSong);
+    ipcMain.on('prev-song', () => spotifyApi.skipToPrevious());
+    ipcMain.on('play-pause', togglePlayPause);
+    ipcMain.on('next-song', () => spotifyApi.skipToNext());
+}
 
-    ipcMain.on('prev-song', () => {
-        spotifyApi.skipToPrevious();
-    });
+async function getCurrentSong() {
+    const data = await spotifyApi.getMyCurrentPlayingTrack();
+    if (!data.body.item) {
+        mainWindow.webContents.send('update-song', 'Nothing is playing');
+        return;
+    }
+    mainWindow.webContents.send('update-song', data.body.item.name);
+}
 
-    ipcMain.on('play-pause', async () => {
-        const data = await spotifyApi.getMyCurrentPlaybackState();
-        if (data.body.is_playing) {
-            spotifyApi.pause();
-        } else {
-            spotifyApi.play();
-        }
-    });
-
-    ipcMain.on('next-song', () => {
-        spotifyApi.skipToNext();
-    });
+async function togglePlayPause() {
+    const data = await spotifyApi.getMyCurrentPlaybackState();
+    if (data.body.is_playing) {
+        spotifyApi.pause();
+    } else {
+        spotifyApi.play();
+    }
 }
 
 app.on('ready', createAuthWindow);
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createMainWindow();
-    }
-});
+app.on('window-all-closed', () => process.platform !== 'darwin' && app.quit());
+app.on('activate', () => BrowserWindow.getAllWindows().length === 0 && createMainWindow());
