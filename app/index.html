@@ -5,7 +5,7 @@
     <title>Spotify Overlay</title>
     <link rel="stylesheet" href="styl.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script type="module" src="renderer.js" defer></script>
+    <script src="renderer.js" defer></script>
 </head>
 
 <body>
@@ -13,9 +13,9 @@
         <div id="album-cover-container">
             <div id="album-covers">
                 <div id="controls">
-                    <button id="prev"><span class="material-icons">fast_rewind</span></button>
-                    <button id="play"><span class="material-icons">pause</span></button>
-                    <button id="next"><span class="material-icons">fast_forward</span></button>
+                    <div class="button" id="prev"><span class="material-icons">fast_rewind</span></div>
+                    <div class="button" id="play"><span class="material-icons">pause</span></div>
+                    <div class="button" id="next"><span class="material-icons">fast_forward</span></div>
                 </div>
                 <img class="current-album-cover" width="150" onerror="this.style.display='none'">
                 <img class="previous-album-cover" width="150" onerror="this.style.display='none'">
@@ -40,4 +40,5 @@
         </div>
     </div>
 </body>
+
 </html>

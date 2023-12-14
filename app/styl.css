@@ -1,3 +1,15 @@
+/* CSS Variables */
+:root {
+    --text-color: white;
+    --text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --background-blur: blur(3px);
+    --icon-hover-color: #ccc;
+    --icon-active-color: rgb(52, 255, 11);
+    --progress-bar-color: #717580;
+    --progress-bar-shadow: 0 0 10px #808080;
+}
+
 /* General Styles */
 body {
     margin: 0;
@@ -8,30 +20,29 @@ body {
     overflow: hidden;
     display: flex;
     align-items: flex-start;
-    /* background-color: rgb(44, 44, 44); */
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    word-wrap: normal;
+    color: var(--text-color);
+    font-family: var(--font-family);
     font-size: 10px;
 }
 
-/* Album Cover Styles */
-#app, #album-cover-container {
+/* Album Cover Container Styles */
+#app,
+#album-cover-container {
     display: flex;
     align-items: center;
 }
 
 #album-covers {
     position: relative;
-    margin: 10px;
-    margin-right: 0;
+    margin: 10px 0;
     width: 150px;
     height: 150px;
-    box-shadow: rgba(255, 255, 255, 0.5) 0 0 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     border-radius: 10px;
 }
 
-#album-covers img, #background-covers img {
+#album-covers img,
+#background-covers img {
     position: absolute;
     top: 0;
     left: 0;
@@ -46,6 +57,7 @@ body {
 
 .previous-album-cover {
     z-index: 1;
+    -webkit-filter: blur(1px);
 }
 
 #background-covers {
@@ -56,39 +68,65 @@ body {
 
 #background-covers img {
     object-fit: cover;
-    -webkit-filter: blur(3px);
+    -webkit-filter: var(--background-blur);
 }
 
-.previous-album-cover {
-    -webkit-filter: blur(1px);
-}
-
-/* Control Styles */
+/* Controls Styles */
 #controls {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     justify-content: space-around;
-    width: 100%;
+    width: 150px;
     z-index: 3;
-    position: relative;
     -webkit-app-region: no-drag;
 }
 
-[data-reveal="left"] {
+.button {
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    -webkit-app-region: no-drag;
+}
+
+.material-icons {
+    font-size: 24px;
+    color: var(--text-color);
+    pointer-events: none;
+    z-index: 3;
+    -webkit-app-region: no-drag;
+    transition: color 0.2s ease-in-out;
+}
+
+.button:hover .material-icons {
+    color: var(--icon-hover-color);
+}
+
+.button:active .material-icons {
+    color: var(--icon-active-color);
+}
+
+/* Reveal Animation */
+[data-reveal="left"],
+[data-reveal="left"].revealed {
     clip-path: inset(0 100% 0 0);
+    border-radius: 10px;
+    -webkit-filter: var(--background-blur);
+    z-index: 2;
 }
 
 [data-reveal="left"].revealed {
-    border-radius: 10px;
-    -webkit-filter: blur(3px);
-    z-index: 2;
     animation: reveal-left 1.2s cubic-bezier(0.17, 0.97, 0.38, 1) forwards 300ms;
 }
 
 @keyframes reveal-left {
-    0% {
-        clip-path: inset(0 100% 0 0);
-    }
-    100% {
+    to {
         clip-path: inset(0 0 0 0);
     }
 }
@@ -99,21 +137,51 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 100%;
-    padding: 10px;
-    padding-left: 5px;
+    padding: 10px 5px;
     position: relative;
     z-index: 3;
 }
 
-#song {
+#song,
+#artist,
+#current-time,
+#duration {
+    color: var(--text-color);
+    text-shadow: var(--text-shadow);
+}
+
+#song,
+#artist {
     font-size: 1.5em;
     margin-bottom: 0.5em;
 }
 
 #artist {
     font-size: 1.2em;
-    margin-bottom: 1em;
+}
+
+/* Text Truncation */
+#song,
+#artist {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+
+#song:hover,
+#artist:hover {
+    text-overflow: clip;
+    cursor: pointer;
+}
+
+/* Responsive font size */
+@media (max-width: 480px) {
+
+    #song,
+    #artist {
+        font-size: 0.9em;
+    }
 }
 
 /* Time and Progress Bar Styles */
@@ -124,27 +192,44 @@ body {
     width: 90%;
 }
 
+/* Progress Bar Container Styles */
 #progress-bar {
     width: 100%;
     height: 10px;
-    background-color: #717580;
-    border-radius: 20px;
-    margin-right: 1em;
+    background-color: rgba(69, 69, 69, 0.4)
+        /* Dark background of the progress bar */
+        border-radius: 20px;
+    box-shadow: inset 0 2px 9px rgba(0, 0, 0, 0.3);
+    /* Inset shadow for depth */
     overflow: hidden;
     -webkit-app-region: no-drag;
-    transition: all 0.3s ease-in-out;
+    position: relative;
+    /* Position relative for pseudo-elements */
 }
 
-#progress-bar:hover {
-    box-shadow: 0 0 10px #808080; /* Add a red glow on hover */
-}
-
+/* Progress Indicator Styles */
 #progress {
     height: 100%;
-    background: linear-gradient(to right, #636363, #bd2e2e);
+    width: 0;
+    background-color: #e74c3c;
     border-radius: 20px;
     transition: width 0.5s ease;
 }
+
+/* Scrubber or Handle for Progress Bar (Optional) */
+/* #progress::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+} */
+
 
 #time-display {
     display: flex;

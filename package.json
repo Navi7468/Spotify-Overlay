@@ -11,6 +11,7 @@
   "description": "",
   "dependencies": {
     "dotenv": "^16.3.1",
+    "get-image-colors": "^4.0.1",
     "path": "^0.12.7",
     "spotify-web-api-node": "^5.0.2",
     "typescript": "^5.2.2"

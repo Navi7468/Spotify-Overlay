@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const SpotifyWebApi = require('spotify-web-api-node');
 const dotenv = require('dotenv');
+const path = require('path');
 dotenv.config();
 
 const spotifyApi = new SpotifyWebApi({
@@ -11,6 +12,7 @@ const spotifyApi = new SpotifyWebApi({
 
 let mainWindow, authWindow;
 let currentSong, progressMs, durationMs, imageUrl;
+let currentArtists = [];
 
 function createAuthWindow() {
     authWindow = new BrowserWindow({
@@ -19,6 +21,7 @@ function createAuthWindow() {
         show: false,
         webPreferences: {
             nodeIntegration: false,
+            preload: path.join(__dirname, 'preload.js')
         },
         frame: false,
         alwaysOnTop: true,
@@ -53,18 +56,21 @@ async function handleAuthRedirect(event, url) {
 async function updateSong() {
     try {
         const data = await spotifyApi.getMyCurrentPlayingTrack();
-        if (data.body.item) {
-            const newSong = data.body.item;
-            if (newSong.name !== currentSong) {
-                currentSong = newSong.name;
-                progressMs = data.body.progress_ms;
-                durationMs = newSong.duration_ms;
-                imageUrl = newSong.album.images[0].url;
-            } else {
-                progressMs = data.body.progress_ms;
-            }
-            mainWindow.webContents.send('update-song', { name: currentSong, progressMs, durationMs, imageUrl });
+        if (!data.body.item) return;
+        const newSong = data.body.item;
+        if (newSong.name !== currentSong) {
+            currentSong = newSong.name;
+            currentArtists = [];
+            newSong.artists.forEach(artist => {
+                currentArtists.push(artist.name);
+            });
+            progressMs = data.body.progress_ms;
+            durationMs = newSong.duration_ms;
+            imageUrl = newSong.album.images[0].url;
+        } else {
+            progressMs = data.body.progress_ms;
         }
+        mainWindow.webContents.send('update-song', { name: currentSong, currentArtists, progressMs, durationMs, imageUrl });
     } catch (error) {
         console.error('Failed to update song:', error);
     }
@@ -73,15 +79,15 @@ async function updateSong() {
 function createMainWindow() {
     mainWindow = new BrowserWindow({
         width: 570,
-    height: 170,
+        height: 170,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
         },
         frame: false,
         alwaysOnTop: true,
         transparent: true,
-        resizable: false,
+        // resizable: false,
         titleBarStyle: 'hidden'
     });
 
@@ -111,6 +117,8 @@ async function togglePlayPause() {
         spotifyApi.play();
     }
 }
+
+app.disableHardwareAcceleration();
 
 app.on('ready', createAuthWindow);
 app.on('window-all-closed', () => process.platform !== 'darwin' && app.quit());
