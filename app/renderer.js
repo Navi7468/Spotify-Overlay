@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // Update song information
 ipcRenderer.on('update-song', (event, song) => {
     songElement.textContent = song.name;
-    console.log(song.artist)
     artistElement.textContent = song.currentArtists.join(', ');
     currentTimeElement.textContent = msToTime(song.progressMs);
     durationElement.textContent = msToTime(song.durationMs);
