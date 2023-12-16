@@ -9,33 +9,33 @@
 </head>
 
 <body>
-    <div id="app">
-        <div id="album-cover-container">
-            <div id="album-covers">
-                <div id="controls">
-                    <div class="button" id="prev"><span class="material-icons">fast_rewind</span></div>
-                    <div class="button" id="play"><span class="material-icons">pause</span></div>
-                    <div class="button" id="next"><span class="material-icons">fast_forward</span></div>
-                </div>
-                <img class="current-album-cover" width="150" onerror="this.style.display='none'">
-                <img class="previous-album-cover" width="150" onerror="this.style.display='none'">
+    <div id="album-cover-container">
+        <div id="album-covers">
+            <div id="controls">
+                <div class="button" id="prev"><span class="material-icons">fast_rewind</span></div>
+                <div class="button" id="play"><span class="material-icons">pause</span></div>
+                <div class="button" id="next"><span class="material-icons">fast_forward</span></div>
             </div>
-            <div id="background-covers">
-                <div id="content">
-                    <h1 id="song">Loading...</h1>
-                    <h2 id="artist"></h2>
-                    <div id="time">
-                        <div id="time-display">
-                            <span id="current-time">0:00</span>
-                            <span id="duration">0:00</span>
-                        </div>
-                        <div id="progress-bar">
-                            <div id="progress">
-                                <div id="scrubber"></div>
-                            </div>
+            <img class="current-album-cover" width="150" onerror="this.style.display='none'">
+            <img class="previous-album-cover" width="150" onerror="this.style.display='none'">
+        </div>
+        <div id="background-covers">
+            <div id="content">
+                <h1 id="song">Loading...</h1>
+                <h2 id="artist"></h2>
+                <div id="time">
+                    <div id="time-display">
+                        <span id="current-time">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                    <div id="progress-bar">
+                        <div id="progress">
+                            <div id="scrubber"></div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div id="background">
                 <img class="current-album-cover" width="150" onerror="this.style.display='none'" data-reveal="left">
                 <img class="previous-album-cover" width="150" onerror="this.style.display='none'">
             </div>

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, Menu } = require("electron");
 const SpotifyWebApi = require("spotify-web-api-node");
 const dotenv = require("dotenv");
 const path = require("path");
@@ -56,8 +56,8 @@ async function handleAuthRedirect(event, url) {
 // Create Main Application Window
 function createMainWindow() {
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 560,
+        height: 170,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -66,6 +66,24 @@ function createMainWindow() {
         alwaysOnTop: true,
         transparent: true,
     });
+
+    // Create custom menu
+    const menu = Menu.buildFromTemplate([
+        {
+            label: 'File',
+            submenu: [
+                { label: 'Quit', click: () => app.quit(), accelerator: 'CmdOrCtrl+Q' },
+                { label: 'Reload', click: () => mainWindow.reload(), accelerator: 'CmdOrCtrl+R' }
+            ]
+        },
+        {
+            label: 'View',
+            submenu: [
+                { label: 'Toggle Dev Tools', click: () => mainWindow.webContents.toggleDevTools(), accelerator: 'CmdOrCtrl+Shift+I' },
+            ]
+        }
+    ]);
+    Menu.setApplicationMenu(menu);
 
     mainWindow.loadFile("app/index.html");
     setInterval(updateSong, 1000);
@@ -95,7 +113,7 @@ function onAppActivate() {
 async function getCurrentSong() {
     try {
         const data = await spotifyApi.getMyCurrentPlayingTrack();
-        if (data.body && data.body.item) return mainWindow.webContents.send('update-song', data.body.item.name);  
+        if (data.body && data.body.item) return mainWindow.webContents.send('update-song', data.body.item.name);
         mainWindow.webContents.send('update-song', 'Nothing is playing');
     } catch (error) {
         console.error('Error fetching current song:', error);
@@ -105,7 +123,7 @@ async function getCurrentSong() {
 async function togglePlayPause() {
     try {
         const data = await spotifyApi.getMyCurrentPlaybackState();
-        if (data.body && data.body.is_playing) return spotifyApi.pause(); 
+        if (data.body && data.body.is_playing) return spotifyApi.pause();
         spotifyApi.play();
     } catch (error) {
         console.error('Error toggling play/pause:', error);
@@ -123,7 +141,7 @@ async function updateSong() {
         progressMs = data.body.progress_ms;
         durationMs = newSong.duration_ms;
         imageUrl = newSong.album.images[0].url;
-        
+
         mainWindow.webContents.send('update-song', { name: currentSong, currentArtists, progressMs, durationMs, imageUrl });
     } catch (error) {
         console.error('Failed to update song:', error);
