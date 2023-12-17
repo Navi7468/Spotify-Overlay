@@ -1,19 +1,22 @@
 {
   "name": "spotify-overlay",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "cls && electron ."
   },
-  "author": "Navi7468",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
+  "description": "",
   "dependencies": {
-    "child_process": "^1.0.2",
-    "dotenv": "^16.0.3",
-    "electron": "^22.2.0",
+    "dotenv": "^16.3.1",
+    "get-image-colors": "^4.0.1",
     "path": "^0.12.7",
-    "ws": "^8.12.0"
+    "spotify-web-api-node": "^5.0.2",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "electron": "27.0.4"
   }
 }
